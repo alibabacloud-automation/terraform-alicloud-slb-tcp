@@ -20,12 +20,12 @@ The Module requires Terraform 0.12 and Terraform Provider AliCloud 1.56.0+.
 
 ```hcl
 module "slb_tcp" {
-  source  = "terraform-alicloud-modules/slb-tcp/alicloud"
-  profile = "Your-Profile-Name"
-  region  = "cn-beijing"
-  create_slb           = true
+  source              = "terraform-alicloud-modules/slb-tcp/alicloud"
+  profile             = "Your-Profile-Name"
+  region              = "cn-beijing"
+  create_slb          = true
   create_tcp_listener = true
-  spec                 = "slb.s2.small"
+  specification       = "slb.s2.small"
   
   ########################
   #tcp listeners creation#

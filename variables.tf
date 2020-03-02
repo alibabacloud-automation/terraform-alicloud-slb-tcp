@@ -57,7 +57,7 @@ variable "bandwidth" {
   default     = 10
 }
 
-variable "spec" {
+variable "specification" {
   description = "The specification of the SLB instance."
   type        = string
   default     = ""

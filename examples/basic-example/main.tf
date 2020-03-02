@@ -59,7 +59,7 @@ module "slb_tcp" {
   region              = var.region
   create_slb          = true
   create_tcp_listener = true
-  spec                = "slb.s2.small"
+  specification       = "slb.s2.small"
   servers_of_virtual_server_group = [
     {
       server_ids = join(",", module.ecs_instance.this_instance_id)
