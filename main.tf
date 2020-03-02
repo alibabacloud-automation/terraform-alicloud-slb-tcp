@@ -32,7 +32,7 @@ module "slb" {
   name                            = "TF-slb-tcp-module"
   address_type                    = var.address_type
   internet_charge_type            = var.internet_charge_type
-  spec                            = var.spec
+  spec                            = var.specification
   bandwidth                       = var.bandwidth
   master_zone_id                  = var.master_zone_id
   slave_zone_id                   = var.slave_zone_id
