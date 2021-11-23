@@ -7,7 +7,9 @@ variable "region" {
 variable "zone_id" {
   default = "cn-hangzhou-h"
 }
-
+variable "name" {
+  default = "terraform_test_001"
+}
 provider "alicloud" {
   region  = var.region
   profile = var.profile
@@ -21,10 +23,24 @@ data "alicloud_vpcs" "default" {
   is_default = true
 }
 
+resource "alicloud_vpc" "default" {
+  count = length(data.alicloud_vpcs.default.ids) > 0 ? 0 : 1
+  vpc_name = var.name
+  cidr_block = "172.16.0.0/12"
+}
+
 data "alicloud_security_groups" "default" {
   name_regex = "default"
   vpc_id     = data.alicloud_vpcs.default.ids.0
 }
+
+resource "alicloud_security_group" "default" {
+  count = length(data.alicloud_security_groups.default.ids) > 0 ? 0 : 1
+  name        = "tf_test_foo"
+  description = "foo"
+  vpc_id       = length(data.alicloud_vpcs.default.ids) > 0 ? data.alicloud_vpcs.default.ids.0 : concat(alicloud_vpc.default.*.id, [""])[0]
+}
+
 
 data "alicloud_vswitches" "default" {
   is_default = true
@@ -39,7 +55,6 @@ resource "alicloud_vswitch" "default" {
   cidr_block        = cidrsubnet(data.alicloud_vpcs.default.vpcs.0.cidr_block, 4, 15)
 }
 
-
 // ECS Module
 module "ecs_instance" {
   source                      = "alibaba/ecs-instance/alicloud//modules/x86-architecture-general-purpose"
@@ -48,7 +63,7 @@ module "ecs_instance" {
   number_of_instances         = 2
   instance_type_family        = "ecs.g6"
   vswitch_id                  = length(data.alicloud_vswitches.default.ids) > 0 ? data.alicloud_vswitches.default.ids.0 : concat(alicloud_vswitch.default.*.id, [""])[0]
-  security_group_ids          = data.alicloud_security_groups.default.ids
+  security_group_ids          = length(data.alicloud_security_groups.default.ids) > 0 ? data.alicloud_security_groups.default.ids : alicloud_security_group.default.*.id
   associate_public_ip_address = true
   internet_max_bandwidth_out  = 10
 }
