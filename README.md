@@ -12,17 +12,11 @@ These types of resources are supported:
 * [Slb_Server_Group](https://www.terraform.io/docs/providers/alicloud/r/slb_server_group.html)
 * [Slb Listener](https://www.terraform.io/docs/providers/alicloud/r/slb_listener.html)
 
-## Terraform versions
-
-The Module requires Terraform 0.12 and Terraform Provider AliCloud 1.56.0+.
-
 ## Usage
 
 ```hcl
 module "slb_tcp" {
   source              = "terraform-alicloud-modules/slb-tcp/alicloud"
-  profile             = "Your-Profile-Name"
-  region              = "cn-beijing"
   create_slb          = true
   create_tcp_listener = true
   specification       = "slb.s2.small"
@@ -90,9 +84,76 @@ module "slb_tcp" {
 * [Basic example](https://github.com/terraform-alicloud-modules/terraform-alicloud-slb-tcp/tree/master/examples/basic-example)
 
 ## Notes
+From the version v1.1.0, the module has removed the following `provider` setting:
 
-* This module using AccessKey and SecretKey are from `profile` and `shared_credentials_file`.
-If you have not set them yet, please install [aliyun-cli](https://github.com/aliyun/aliyun-cli#installation) and configure it.
+```hcl
+provider "alicloud" {
+  profile                 = var.profile != "" ? var.profile : null
+  shared_credentials_file = var.shared_credentials_file != "" ? var.shared_credentials_file : null
+  region                  = var.region != "" ? var.region : null
+  skip_region_validation  = var.skip_region_validation
+  configuration_source    = "terraform-alicloud-modules/slb-tcp"
+}
+```
+
+If you still want to use the `provider` setting to apply this module, you can specify a supported version, like 1.0.0:
+
+```hcl
+module "slb_tcp" {
+  source              = "terraform-alicloud-modules/slb-tcp/alicloud"
+  version             = "1.0.0"
+  region              = "cn-beijing"
+  profile             = "Your-Profile-Name"
+  create_slb          = true
+  create_tcp_listener = true
+  // ...
+}
+```
+
+If you want to upgrade the module to 1.1.0 or higher in-place, you can define a provider which same region with
+previous region:
+
+```hcl
+provider "alicloud" {
+  region  = "cn-beijing"
+  profile = "Your-Profile-Name"
+}
+module "slb_tcp" {
+  source              = "terraform-alicloud-modules/slb-tcp/alicloud"
+  create_slb          = true
+  create_tcp_listener = true
+  // ...
+}
+```
+or specify an alias provider with a defined region to the module using `providers`:
+
+```hcl
+provider "alicloud" {
+  region  = "cn-beijing"
+  profile = "Your-Profile-Name"
+  alias   = "bj"
+}
+module "slb_tcp" {
+  source              = "terraform-alicloud-modules/slb-tcp/alicloud"
+  providers = {
+    alicloud = alicloud.bj
+  }
+  create_slb          = true
+  create_tcp_listener = true
+  // ...
+}
+```
+
+and then run `terraform init` and `terraform apply` to make the defined provider effect to the existing module state.
+
+More details see [How to use provider in the module](https://www.terraform.io/docs/language/modules/develop/providers.html#passing-providers-explicitly)
+
+## Terraform versions
+
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.0 |
+| <a name="requirement_alicloud"></a> [alicloud](#requirement\_alicloud) | >= 1.56.0 |
 
 Submit Issues
 -------------
