@@ -13,15 +13,13 @@ locals {
 
 // Slb Module
 module "slb" {
-  source                          = "alibaba/slb/alicloud"
-  region                          = var.region
-  profile                         = var.profile
-  shared_credentials_file         = var.shared_credentials_file
-  skip_region_validation          = var.skip_region_validation
-  use_existing_slb                = var.use_existing_slb
+  source = "alibaba/slb/alicloud"
+
+  create           = var.create_slb
+  use_existing_slb = var.use_existing_slb
+
   existing_slb_id                 = var.existing_slb_id
-  create                          = var.create_slb
-  name                            = "TF-slb-tcp-module"
+  name                            = var.name
   address_type                    = var.address_type
   internet_charge_type            = var.internet_charge_type
   spec                            = var.specification
@@ -39,15 +37,11 @@ module "slb" {
 }
 
 module "slb_tcp_listener" {
-  source                  = "terraform-alicloud-modules/slb-listener/alicloud"
-  create                  = var.create_slb || var.use_existing_slb ? var.create_tcp_listener : false
-  profile                 = var.profile
-  region                  = var.region
-  shared_credentials_file = var.shared_credentials_file
-  skip_region_validation  = var.skip_region_validation
-  slb                     = module.slb.this_slb_id
-  listeners               = local.listeners
-  health_check            = var.health_check
-  advanced_setting        = var.advanced_setting
-}
+  source = "terraform-alicloud-modules/slb-listener/alicloud"
+  create = var.create_slb || var.use_existing_slb ? var.create_tcp_listener : false
 
+  slb              = module.slb.this_slb_id
+  listeners        = local.listeners
+  health_check     = var.health_check
+  advanced_setting = var.advanced_setting
+}

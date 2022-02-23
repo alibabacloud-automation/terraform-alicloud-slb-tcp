@@ -9,6 +9,7 @@ variable "profile" {
   type        = string
   default     = ""
 }
+
 variable "shared_credentials_file" {
   description = "(Deprecated from version 1.1.0) This is the path to the shared credentials file. If this is not set and a profile is specified, $HOME/.aliyun/config.json will be used."
   type        = string
@@ -20,7 +21,14 @@ variable "skip_region_validation" {
   type        = bool
   default     = false
 }
+
 # Load Balancer Instance variables
+variable "create_slb" {
+  description = "Whether to create load balancer instance. If setting 'use_existing_slb = true' and 'existing_slb_id', it will be ignored."
+  type        = bool
+  default     = true
+}
+
 variable "use_existing_slb" {
   description = "Whether to use an existing load balancer instance. If true, 'existing_slb_id' should not be empty. Also, you can create a new one by setting 'create = true'."
   type        = bool
@@ -33,10 +41,10 @@ variable "existing_slb_id" {
   default     = ""
 }
 
-variable "create_slb" {
-  description = "Whether to create load balancer instance. If setting 'use_existing_slb = true' and 'existing_slb_id', it will be ignored."
-  type        = bool
-  default     = true
+variable "name" {
+  description = "The name of a new load balancer."
+  type        = string
+  default     = ""
 }
 
 variable "address_type" {
@@ -51,16 +59,16 @@ variable "internet_charge_type" {
   default     = "PayByTraffic"
 }
 
+variable "specification" {
+  description = "The specification of the SLB instance."
+  type        = string
+  default     = "slb.s1.small"
+}
+
 variable "bandwidth" {
   description = "The load balancer instance bandwidth."
   type        = number
   default     = 10
-}
-
-variable "specification" {
-  description = "The specification of the SLB instance."
-  type        = string
-  default     = ""
 }
 
 variable "master_zone_id" {
@@ -92,7 +100,6 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-
 
 # Listener common variables
 variable "create_tcp_listener" {
