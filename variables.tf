@@ -53,6 +53,12 @@ variable "address_type" {
   default     = "internet"
 }
 
+variable "vswitch_id" {
+  description = "The vswitch id used to launch load balancer."
+  type        = string
+  default     = ""
+}
+
 variable "internet_charge_type" {
   description = "The charge type of load balancer instance internet network."
   type        = string
