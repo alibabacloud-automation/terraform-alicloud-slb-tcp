@@ -1,3 +1,7 @@
+provider "alicloud" {
+  region = "eu-central-1"
+}
+
 data "alicloud_zones" "default" {
 }
 
@@ -46,7 +50,8 @@ module "slb_instance" {
   use_existing_slb = false
 
   name                 = var.name
-  address_type         = "internet"
+  address_type         = "intranet"
+  vswitch_id           = module.vpc.this_vswitch_ids[0]
   internet_charge_type = "PayByTraffic"
   specification        = var.specification
   bandwidth            = var.bandwidth
