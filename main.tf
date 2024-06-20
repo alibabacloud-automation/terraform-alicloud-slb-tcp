@@ -21,6 +21,7 @@ module "slb" {
   existing_slb_id                 = var.existing_slb_id
   name                            = var.name
   address_type                    = var.address_type
+  vswitch_id                      = var.vswitch_id
   internet_charge_type            = var.internet_charge_type
   spec                            = var.specification
   bandwidth                       = var.bandwidth

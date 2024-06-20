@@ -1,4 +1,6 @@
-data "alicloud_zones" "default" {
+data "alicloud_slb_zones" "default" {
+  available_slb_address_type       = "classic_internet"
+  available_slb_address_ip_version = "ipv4"
 }
 
 data "alicloud_images" "default" {
@@ -6,7 +8,7 @@ data "alicloud_images" "default" {
 }
 
 data "alicloud_instance_types" "default" {
-  availability_zone = data.alicloud_zones.default.zones.0.id
+  availability_zone = data.alicloud_slb_zones.default.zones.0.id
 }
 
 resource "alicloud_slb_acl" "default" {
@@ -19,7 +21,7 @@ module "vpc" {
   create             = true
   vpc_cidr           = "172.16.0.0/12"
   vswitch_cidrs      = ["172.16.0.0/21"]
-  availability_zones = [data.alicloud_zones.default.zones.0.id]
+  availability_zones = [data.alicloud_slb_zones.default.zones.0.id]
 }
 
 module "security_group" {
@@ -50,8 +52,8 @@ module "slb_instance" {
   internet_charge_type = "PayByTraffic"
   specification        = var.specification
   bandwidth            = var.bandwidth
-  master_zone_id       = data.alicloud_zones.default.zones.0.id
-  slave_zone_id        = data.alicloud_zones.default.zones.1.id
+  master_zone_id       = data.alicloud_slb_zones.default.zones.0.master_zone_id 
+  slave_zone_id        = data.alicloud_slb_zones.default.zones.0.slave_zone_id
   tags                 = var.tags
 
   #slb_tcp_listener

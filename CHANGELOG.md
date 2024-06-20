@@ -1,4 +1,9 @@
-## 1.2.0 (Unreleased)
+## 1.3.0 (Unreleased)
+## 1.2.0 (August 10, 2023)
+IMPROVEMENTS:
+
+- Add vswitch_id field to support Intranet; Improves the module example. [GH-7](https://github.com/terraform-alicloud-modules/terraform-alicloud-slb-tcp/pull/7)
+
 ## 1.1.0 (December 6, 2021)
 
 ENHANCEMENTS:
